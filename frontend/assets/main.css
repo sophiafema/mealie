@@ -24,6 +24,15 @@
   background-color: rgb(var(--v-theme-background, 30, 30, 30)) !important;
 }
 
+.no-scroll {
+  position: fixed;
+  height: calc(100vh - 48px);
+  top: 0;
+  right: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .theme--dark.v-card {
   background-color: #1e1e1e !important;
 }

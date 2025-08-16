@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="showDrawer" class="d-flex flex-column d-print-none position-fixed">
+  <v-navigation-drawer v-model="showDrawer" scrim class="d-flex flex-column d-print-none position-fixed">
     <!-- User Profile -->
     <template v-if="loggedIn">
       <v-list-item lines="two" :to="userProfileLink" exact>
@@ -82,7 +82,7 @@
     </template>
 
     <!-- Bottom Navigation Links -->
-    <template v-if="bottomLinks" #append>
+    <template v-if="bottomLinks">
       <v-list v-model:selected="bottomSelected" nav density="compact">
         <template v-for="nav in bottomLinks">
           <div v-if="!nav.restricted || isOwnGroup" :key="nav.key || nav.title">
@@ -156,20 +156,42 @@ export default defineNuxtComponent({
       get: () => props.modelValue,
       set: value => context.emit("update:modelValue", value),
     });
+
+    const MOBILE_WIDTH = 760;
+    const { width: wWidth } = useWindowSize();
+    const isMobile = computed(() => wWidth.value <= MOBILE_WIDTH);
+
+    // Automatically open drawer on desktop
     watch(showDrawer, () => {
-      if (window.innerWidth < 760 && state.hasOpenedBefore === false) {
+      if (window.innerWidth < MOBILE_WIDTH && state.hasOpenedBefore === false) {
         state.hasOpenedBefore = true;
       }
     });
-    const { width: wWidth } = useWindowSize();
-    watch(wWidth, (w) => {
-      if (w > 760) {
-        showDrawer.value = true;
-      }
-      else {
+
+    watch([isMobile], ([mobile]) => {
+      if (mobile) {
         showDrawer.value = false;
       }
+      else {
+        showDrawer.value = true;
+      }
     });
+
+    // lock main screen, when drawer is open
+    const getMainEl = () => document.querySelector("main.v-main");
+
+    const toggleBodyScroll = (lock: boolean) => {
+      const main = getMainEl();
+      if (main) {
+        main.classList.toggle("no-scroll", lock);
+      }
+    };
+
+    watch([showDrawer, isMobile], ([open, mobile]) => {
+      toggleBodyScroll(open && mobile);
+    }, { immediate: true });
+
+    onBeforeUnmount(() => toggleBodyScroll(false)); // onlock on unmount
 
     const allLinks = computed(() => [...props.topLink, ...(props.secondaryLinks || []), ...(props.bottomLinks || [])]);
     function initDropdowns() {
