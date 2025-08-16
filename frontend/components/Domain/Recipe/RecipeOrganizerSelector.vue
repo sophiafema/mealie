@@ -11,12 +11,10 @@
     multiple
     :variant="variant"
     :prepend-inner-icon="icon"
-    :append-icon="showAdd ? $globals.icons.create : undefined"
     return-object
     auto-select-first
     class="pa-0"
     @update:model-value="resetSearchInput"
-    @click:append="dialog = true"
   >
     <template #chip="{ item, index }">
       <v-chip
@@ -31,6 +29,14 @@
       >
         {{ item.value }}
       </v-chip>
+    </template>
+    <template v-if="showAdd" #append-item>
+        <v-divider class="my-2" />
+        <v-list-item
+          :title="`+ ${$t('general.add')}`"
+          class="text-primary"
+          @click="dialog = true"
+        />
     </template>
 
     <template

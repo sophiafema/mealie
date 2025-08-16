@@ -186,7 +186,7 @@
                 v-else-if="field.type === Organizer.Category"
                 v-model="field.organizers"
                 :selector-type="Organizer.Category"
-                :show-add="false"
+                :show-add="true"
                 :show-label="false"
                 :show-icon="false"
                 variant="underlined"
