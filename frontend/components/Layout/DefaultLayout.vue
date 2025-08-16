@@ -286,24 +286,39 @@ export default defineNuxtComponent({
       },
     ]);
 
-    const bottomLinks = computed<SideBarLink[]>(() =>
-      isAdmin.value
-        ? [
-            {
-              icon: $globals.icons.cog,
-              title: i18n.t("general.settings"),
-              to: "/admin/site-settings",
-              restricted: true,
-            },
-          ]
-        : [],
-    );
+    const bottomLinks = computed<SideBarLink[]>(() => {
+      const links: SideBarLink[] = [];
+      links.push(
+        {
+          icon: $globals.icons.book,
+          to: `/g/${groupSlug.value}/cookbooks`,
+          title: i18n.t("sidebar.cookbooks"),
+          restricted: true,
+        },
+        {
+          icon: $globals.icons.timelineText,
+          title: i18n.t("recipe.timeline"),
+          to: `/g/${groupSlug.value}/recipes/timeline`,
+          restricted: true,
+        },
+      );
+      if (isAdmin.value) {
+        links.push({
+          icon: $globals.icons.cog,
+          title: i18n.t("sidebar.site-settings"),
+          to: "/admin/site-settings",
+          restricted: true,
+        });
+      }
+
+      return links;
+    });
 
     const topLinks = computed<SideBarLink[]>(() => [
       {
         icon: $globals.icons.silverwareForkKnife,
         to: `/g/${groupSlug.value}`,
-        title: i18n.t("general.recipes"),
+        title: i18n.t("sidebar.all-recipes"),
         restricted: false,
       },
       {
@@ -322,18 +337,6 @@ export default defineNuxtComponent({
         icon: $globals.icons.formatListCheck,
         title: i18n.t("shopping-list.shopping-lists"),
         to: "/shopping-lists",
-        restricted: true,
-      },
-      {
-        icon: $globals.icons.timelineText,
-        title: i18n.t("recipe.timeline"),
-        to: `/g/${groupSlug.value}/recipes/timeline`,
-        restricted: true,
-      },
-      {
-        icon: $globals.icons.book,
-        to: `/g/${groupSlug.value}/cookbooks`,
-        title: i18n.t("cookbook.cookbooks"),
         restricted: true,
       },
       {
