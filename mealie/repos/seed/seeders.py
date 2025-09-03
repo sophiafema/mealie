@@ -45,11 +45,10 @@ class MultiPurposeLabelSeeder(AbstractSeeder):
 
     def seed(self, locale: str | None = None) -> None:
         self.logger.info("Seeding MultiPurposeLabel")
-        for label in self.load_data(locale):
-            try:
-                self.service.create_one(label)
-            except Exception as e:
-                self.logger.error(e)
+        try:
+            self.service.create_many([label for label in self.load_data(locale)])
+        except Exception as e:
+            self.logger.error(e)
 
 
 class IngredientUnitsSeeder(AbstractSeeder):
@@ -80,11 +79,10 @@ class IngredientUnitsSeeder(AbstractSeeder):
 
     def seed(self, locale: str | None = None) -> None:
         self.logger.info("Seeding Ingredient Units")
-        for unit in self.load_data(locale):
-            try:
-                self.repos.ingredient_units.create(unit)
-            except Exception as e:
-                self.logger.error(e)
+        try:
+            self.repos.ingredient_units.create_many([unit for unit in self.load_data(locale)])
+        except Exception as e:
+            self.logger.error(e)
 
 
 class IngredientFoodsSeeder(AbstractSeeder):
@@ -121,8 +119,7 @@ class IngredientFoodsSeeder(AbstractSeeder):
 
     def seed(self, locale: str | None = None) -> None:
         self.logger.info("Seeding Ingredient Foods")
-        for food in self.load_data(locale):
-            try:
-                self.repos.ingredient_foods.create(food)
-            except Exception as e:
-                self.logger.error(e)
+        try:
+            self.repos.ingredient_foods.create_many([food for food in self.load_data(locale)])
+        except Exception as e:
+            self.logger.error(e)
